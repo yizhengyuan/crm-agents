@@ -41,9 +41,9 @@ export default async function HomePage() {
   const recentCustomers = customers.slice(0, 5);
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-6 w-full">
       {/* Hero banner */}
-      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 text-white shadow-md">
+      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 text-white shadow-sm">
         <CardContent className="relative z-10 flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export default async function HomePage() {
       </Card>
 
       {/* Stats grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={Users}
           iconBg="bg-blue-100"
@@ -127,7 +127,7 @@ export default async function HomePage() {
 
       {/* Recent customers */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border-0 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
           <CardHeader className="pb-3 flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-base">最近客户</CardTitle>
@@ -209,7 +209,7 @@ export default async function HomePage() {
         </Card>
 
         {/* Quick actions */}
-        <Card>
+        <Card className="border-0 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">快速入口</CardTitle>
           </CardHeader>
@@ -263,18 +263,18 @@ function StatCard({
   hintColor?: string;
 }) {
   return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-center gap-3">
-          <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", iconBg)}>
-            <Icon className={cn("h-5 w-5", iconColor)} />
-          </div>
-          <div className="flex-1 min-w-0">
+    <Card className="border-0 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg", iconBg)}>
+              <Icon className={cn("h-4 w-4", iconColor)} />
+            </div>
             <p className="text-xs text-muted-foreground">{label}</p>
-            <p className="text-2xl font-bold tracking-tight">{value}</p>
           </div>
+          <p className="text-lg font-semibold tracking-tight">{value}</p>
         </div>
-        <p className={cn("mt-2 text-xs", hintColor)}>{hint}</p>
+        <p className={cn("mt-1.5 text-[11px]", hintColor)}>{hint}</p>
       </CardContent>
     </Card>
   );

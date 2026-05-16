@@ -194,9 +194,9 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-amber-200 to-rose-200 text-[10px] font-bold text-rose-700">
-                王
+                用
               </div>
-              <span>最后确认: 王明玉</span>
+              <span>最后确认: 用户001</span>
             </div>
             <p className="text-[10px] text-muted-foreground mt-0.5">
               {customer.updatedAt.toLocaleString("zh-CN", {

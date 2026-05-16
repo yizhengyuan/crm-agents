@@ -62,9 +62,9 @@ export function AppHeader() {
 
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-200 to-rose-200 text-xs font-semibold text-rose-700">
-            王
+            用
           </div>
-          <span className="text-sm font-medium hidden sm:block">王明玉</span>
+          <span className="text-sm font-medium hidden sm:block">我的</span>
         </div>
       </div>
     </header>

@@ -181,7 +181,7 @@ export function CustomerTimeline({
                       )}
                     />
 
-                    <Card className="hover:shadow-md transition-shadow border-muted">
+                    <Card className="hover:shadow-md transition-shadow border-0">
                       <CardContent className="p-3.5">
                         <div className="flex items-start gap-2.5">
                           <div className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg", meta.iconBg)}>

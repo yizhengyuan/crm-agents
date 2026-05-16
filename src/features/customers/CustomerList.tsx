@@ -11,15 +11,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Users } from "lucide-react";
+import { Users, AlertTriangle, MessageCircle } from "lucide-react";
 
 type CustomerListItem = {
   id: string;
   displayName: string;
+  wechatName: string | null;
   company: string | null;
   roleTitle: string | null;
+  sourceChannel: string | null;
   currentLayer: CustomerLayer | null;
   currentStage: CustomerStage | null;
+  hasValueRisk: boolean;
+  lastInteractionAt: Date | null;
   updatedAt: Date;
 };
 
@@ -51,15 +55,18 @@ export function CustomerList({ customers }: { customers: CustomerListItem[] }) {
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden border-0">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted/50 hover:bg-muted/50">
-            <TableHead>客户</TableHead>
-            <TableHead>公司/角色</TableHead>
+          <TableRow className="bg-muted/40 hover:bg-muted/40">
+            <TableHead className="min-w-[140px]">客户</TableHead>
+            <TableHead className="hidden md:table-cell">公司/角色</TableHead>
+            <TableHead className="hidden lg:table-cell">阶段</TableHead>
             <TableHead>分层</TableHead>
-            <TableHead>阶段</TableHead>
-            <TableHead className="text-right">更新时间</TableHead>
+            <TableHead className="hidden xl:table-cell">来源</TableHead>
+            <TableHead className="hidden xl:table-cell text-center">风险</TableHead>
+            <TableHead className="hidden 2xl:table-cell">最近互动</TableHead>
+            <TableHead className="text-right">更新</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -70,13 +77,29 @@ export function CustomerList({ customers }: { customers: CustomerListItem[] }) {
                   href={`/customers/${customer.id}`}
                   className="hover:text-primary transition-colors"
                 >
-                  {customer.displayName}
+                  <div className="flex flex-col">
+                    <span>{customer.displayName}</span>
+                    {customer.wechatName && (
+                      <span className="text-[11px] text-muted-foreground font-normal">
+                        @{customer.wechatName}
+                      </span>
+                    )}
+                  </div>
                 </Link>
               </TableCell>
-              <TableCell className="text-muted-foreground">
+              <TableCell className="hidden md:table-cell text-muted-foreground">
                 {[customer.company, customer.roleTitle]
                   .filter(Boolean)
                   .join(" / ") || "-"}
+              </TableCell>
+              <TableCell className="hidden lg:table-cell">
+                {customer.currentStage ? (
+                  <Badge variant="outline" className="bg-blue-50 text-blue-800 border-blue-200">
+                    {stageLabels[customer.currentStage] ?? customer.currentStage}
+                  </Badge>
+                ) : (
+                  <span className="text-muted-foreground text-sm">未定</span>
+                )}
               </TableCell>
               <TableCell>
                 {customer.currentLayer ? (
@@ -93,16 +116,28 @@ export function CustomerList({ customers }: { customers: CustomerListItem[] }) {
                   <span className="text-muted-foreground text-sm">未定</span>
                 )}
               </TableCell>
-              <TableCell>
-                {customer.currentStage ? (
-                  <Badge variant="outline" className="bg-blue-50 text-blue-800 border-blue-200">
-                    {stageLabels[customer.currentStage] ?? customer.currentStage}
+              <TableCell className="hidden xl:table-cell text-muted-foreground text-sm">
+                {customer.sourceChannel ?? "-"}
+              </TableCell>
+              <TableCell className="hidden xl:table-cell text-center">
+                {customer.hasValueRisk ? (
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] gap-0.5 bg-rose-50 text-rose-600 border-rose-200"
+                  >
+                    <AlertTriangle className="h-2.5 w-2.5" />
+                    风险
                   </Badge>
                 ) : (
-                  <span className="text-muted-foreground text-sm">未定</span>
+                  <span className="text-muted-foreground/40 text-xs">-</span>
                 )}
               </TableCell>
-              <TableCell className="text-right text-muted-foreground text-sm">
+              <TableCell className="hidden 2xl:table-cell text-muted-foreground text-sm">
+                {customer.lastInteractionAt
+                  ? customer.lastInteractionAt.toLocaleDateString("zh-CN")
+                  : "-"}
+              </TableCell>
+              <TableCell className="text-right text-muted-foreground text-sm whitespace-nowrap">
                 {customer.updatedAt.toLocaleDateString("zh-CN")}
               </TableCell>
             </TableRow>

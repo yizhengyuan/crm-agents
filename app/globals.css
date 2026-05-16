@@ -7,7 +7,7 @@
   --font-sans: var(--font-sans);
   --color-crm-ink: oklch(0.145 0 0);
   --color-crm-muted: oklch(0.556 0 0);
-  --color-crm-line: oklch(0.922 0 0);
+  --color-crm-line: oklch(0.94 0 0 / 0.35);
   --color-crm-surface: oklch(0.985 0 0);
   --color-crm-primary: oklch(0.546 0.245 262.881);
   --color-layer-s: oklch(0.6 0.18 160);

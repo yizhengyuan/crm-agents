@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
 import {
   LayoutDashboard,
   Users,
@@ -31,20 +30,11 @@ const navItems: NavItem[] = [
   { label: "系统设置", href: "/settings", icon: Settings },
 ];
 
-type StatItem = {
-  label: string;
-  value: string;
-  delta: number;
-};
-
-const todayStats: StatItem[] = [
-  { label: "客户总数", value: "128", delta: 12 },
-  { label: "S/A 客户", value: "23", delta: 3 },
-  { label: "待分析客户", value: "15", delta: -2 },
-  { label: "今日新增资料", value: "8", delta: 5 },
-];
-
-export function AppSidebar() {
+export function AppSidebar({
+  stats,
+}: {
+  stats: { label: string; value: string }[];
+}) {
   const pathname = usePathname();
 
   return (
@@ -58,7 +48,7 @@ export function AppSidebar() {
           <Sparkles className="h-5 w-5 text-white" />
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="font-bold tracking-tight text-base">客户智能助手</span>
+          <span className="font-bold tracking-tight text-base">CRM智能体</span>
           <span className="rounded-md bg-gradient-to-r from-violet-500 to-fuchsia-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
             AI
           </span>
@@ -72,7 +62,9 @@ export function AppSidebar() {
           const isActive =
             item.href === "/"
               ? pathname === "/"
-              : pathname.startsWith(item.href);
+              : pathname === item.href ||
+                (item.href !== "/" &&
+                  pathname.startsWith(item.href + "/"));
           return (
             <Link
               key={item.href}
@@ -95,20 +87,10 @@ export function AppSidebar() {
       <div className="rounded-xl border bg-card p-4 shadow-sm">
         <h3 className="text-sm font-semibold mb-3">今日概览</h3>
         <div className="space-y-2.5">
-          {todayStats.map((s) => (
+          {stats.map((s) => (
             <div key={s.label} className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground">{s.label}</span>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-base font-bold tracking-tight">{s.value}</span>
-                <span
-                  className={cn(
-                    "text-[11px] font-semibold",
-                    s.delta >= 0 ? "text-emerald-600" : "text-rose-500",
-                  )}
-                >
-                  {s.delta >= 0 ? `+${s.delta}` : s.delta}
-                </span>
-              </div>
+              <span className="text-base font-bold tracking-tight">{s.value}</span>
             </div>
           ))}
         </div>
