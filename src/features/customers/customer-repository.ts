@@ -69,3 +69,46 @@ export async function updateCustomerLabels(
     },
   });
 }
+
+export async function getCustomerForAnalysis(customerId: string) {
+  return prisma.customer.findUnique({
+    where: { id: customerId },
+    include: {
+      materials: { orderBy: { createdAt: "asc" } },
+      workspace: { include: { tagRules: true } },
+      aiAnalyses: { orderBy: { createdAt: "desc" }, take: 1 },
+    },
+  });
+}
+
+export async function createAiAnalysisRecord(
+  customerId: string,
+  model: string,
+  promptVersion: string,
+  materialIds: string[],
+) {
+  return prisma.aiAnalysis.create({
+    data: {
+      customerId,
+      status: "pending",
+      model,
+      promptVersion,
+      materialIds,
+    },
+  });
+}
+
+export async function updateAiAnalysisStatus(
+  analysisId: string,
+  input:
+    | { status: "running"; startedAt: Date }
+    | ({ status: "succeeded"; completedAt: Date } & Partial<
+        import("@/features/ai/ai-analysis-schema").AiAnalysisOutput
+      >)
+    | { status: "failed"; errorMessage: string; completedAt: Date },
+) {
+  return prisma.aiAnalysis.update({
+    where: { id: analysisId },
+    data: input as never,
+  });
+}

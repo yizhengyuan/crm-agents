@@ -3,6 +3,7 @@ import { CUSTOMER_LAYERS, CUSTOMER_STAGES } from "@/features/tags/tag-system";
 import { MaterialComposer } from "@/features/materials/MaterialComposer";
 import { CustomerTimeline } from "./CustomerTimeline";
 import { updateCustomerLabelsAction } from "./customer-actions";
+import { runCustomerAnalysisAction } from "@/features/ai/ai-analysis-actions";
 
 type CustomerDetailProps = {
   customer: Customer & {
@@ -13,6 +14,7 @@ type CustomerDetailProps = {
 
 export function CustomerDetail({ customer }: CustomerDetailProps) {
   const labelAction = updateCustomerLabelsAction.bind(null, customer.id);
+  const analysisAction = runCustomerAnalysisAction.bind(null, customer.id);
   const latestAnalysis = customer.aiAnalyses[0];
 
   return (
@@ -81,7 +83,27 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
       </section>
       <aside className="rounded-2xl border border-crm-line bg-white p-5 shadow-sm">
         <p className="text-sm text-crm-muted">AI 客户理解</p>
-        {latestAnalysis ? (
+        <form action={analysisAction}>
+          <button
+            className="mb-4 w-full rounded-lg bg-crm-primary px-4 py-2 text-white disabled:opacity-50"
+            disabled={latestAnalysis?.status === "running"}
+          >
+            {latestAnalysis?.status === "running" ? "分析中…" : "重新分析"}
+          </button>
+        </form>
+        {latestAnalysis?.status === "running" ? (
+          <div className="rounded-lg bg-yellow-50 p-4 text-sm text-yellow-700">
+            AI 正在分析客户资料，请稍候…
+          </div>
+        ) : latestAnalysis?.status === "failed" ? (
+          <div className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
+            <p className="font-semibold">分析失败</p>
+            <p className="mt-1">{latestAnalysis.errorMessage}</p>
+            <p className="mt-2 text-xs">
+              请检查 API Key 配置或稍后重试。
+            </p>
+          </div>
+        ) : latestAnalysis?.status === "succeeded" ? (
           <div className="mt-3 space-y-4 text-sm">
             <section>
               <h2 className="font-semibold">摘要</h2>
@@ -92,14 +114,16 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
             <section>
               <h2 className="font-semibold">分层建议</h2>
               <p className="mt-1">
-                {latestAnalysis.recommendedLayer ?? "信息不足"}：
+                {latestAnalysis.recommendedLayer ?? "信息不足"}（置信度{" "}
+                {latestAnalysis.layerConfidence}%）：
                 {latestAnalysis.layerReason}
               </p>
             </section>
             <section>
               <h2 className="font-semibold">阶段建议</h2>
               <p className="mt-1">
-                {latestAnalysis.recommendedStage ?? "信息不足"}：
+                {latestAnalysis.recommendedStage ?? "信息不足"}（置信度{" "}
+                {latestAnalysis.stageConfidence}%）：
                 {latestAnalysis.stageReason}
               </p>
             </section>
