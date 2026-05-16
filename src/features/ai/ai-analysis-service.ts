@@ -1,6 +1,4 @@
-import OpenAI from "openai";
-import { zodTextFormat } from "openai/helpers/zod";
-import { env } from "@/server/env";
+import { resolveClient } from "@/server/ai-client";
 import {
   aiAnalysisOutputSchema,
   type AiAnalysisOutput,
@@ -13,29 +11,31 @@ export type AnalysisMessageInput = {
 export async function requestCustomerAnalysis(
   input: AnalysisMessageInput,
 ): Promise<AiAnalysisOutput> {
-  if (!env.OPENAI_API_KEY) {
-    throw new Error("OPENAI_API_KEY is required to run customer analysis");
-  }
-
-  const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
-  const response = await client.responses.parse({
-    model: env.OPENAI_MODEL,
-    input: [
+  const { client, model } = resolveClient();
+  const response = await client.chat.completions.create({
+    model,
+    messages: [
       {
-        role: "user",
-        content: [{ type: "input_text", text: input.prompt }],
+        role: "system",
+        content:
+          "你是一个 CRM 客户分析助手。请严格按 JSON 格式输出分析结果，不要输出任何 JSON 之外的内容。",
       },
+      { role: "user", content: input.prompt },
     ],
-    text: {
-      format: zodTextFormat(aiAnalysisOutputSchema, "customer_analysis"),
-    },
+    response_format: { type: "json_object" },
   });
 
-  const parsed = response.output_parsed;
-  if (!parsed) {
-    throw new Error(
-      "OpenAI response did not include parsed customer analysis",
-    );
+  const text = response.choices[0]?.message?.content;
+  if (!text) {
+    throw new Error("AI response did not include content");
   }
-  return parsed;
+
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    throw new Error("AI response was not valid JSON");
+  }
+
+  return aiAnalysisOutputSchema.parse(raw);
 }
