@@ -19,7 +19,7 @@ function resolveTitle(pathname: string): string {
   if (pathname.startsWith("/customers/") && pathname !== "/customers/new") {
     return "客户详情";
   }
-  return "客户智能助手";
+  return "王二狗销售助理";
 }
 
 export function AppHeader() {

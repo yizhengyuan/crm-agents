@@ -48,7 +48,7 @@ export function AppSidebar({
           <Sparkles className="h-5 w-5 text-white" />
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="font-bold tracking-tight text-base">CRM智能体</span>
+          <span className="font-bold tracking-tight text-base">王二狗</span>
           <span className="rounded-md bg-gradient-to-r from-violet-500 to-fuchsia-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
             AI
           </span>

@@ -28,7 +28,7 @@ export default async function CustomersPage({
         <div>
           <h1 className="text-2xl font-bold tracking-tight">客户列表</h1>
           <p className="mt-1 text-muted-foreground">
-            搜索、筛选并进入客户知识库。
+            搜索、筛选并管理你的客户。
           </p>
         </div>
         <Link

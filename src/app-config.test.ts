@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { appConfig } from "./app-config";
 
 describe("appConfig", () => {
-  it("exposes the CRM product name", () => {
-    expect(appConfig.name).toBe("私域 CRM 客户知识库");
+  it("exposes the product name", () => {
+    expect(appConfig.name).toBe("王二狗销售助理");
     expect(appConfig.defaultWorkspaceName).toBe("默认工作区");
   });
 

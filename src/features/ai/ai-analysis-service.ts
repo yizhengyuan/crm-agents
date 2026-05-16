@@ -18,7 +18,7 @@ export async function requestCustomerAnalysis(
       {
         role: "system",
         content:
-          "你是一个 CRM 客户分析助手。请严格按 JSON 格式输出分析结果，不要输出任何 JSON 之外的内容。",
+          "你是一个销售助理，专门分析客户资料并给出跟进建议。请严格按 JSON 格式输出分析结果，不要输出任何 JSON 之外的内容。",
       },
       { role: "user", content: input.prompt },
     ],

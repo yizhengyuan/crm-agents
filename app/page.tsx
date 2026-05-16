@@ -49,11 +49,11 @@ export default async function HomePage() {
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               <span className="text-xs font-semibold uppercase tracking-wider opacity-90">
-                AI 驱动 · 私域客户知识库
+                AI 驱动 · 王二狗销售助理
               </span>
             </div>
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-              欢迎使用客户智能助手
+              欢迎使用王二狗销售助理
             </h1>
             <p className="text-sm opacity-90 max-w-xl">
               把碎片化的客户资料沉淀为可被 AI 理解的知识,自动给出分层、阶段、风险信号建议。
