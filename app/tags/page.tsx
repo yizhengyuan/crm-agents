@@ -1,6 +1,8 @@
 import { TagRulesEditor } from "@/features/tags/TagRulesEditor";
 import { listTagRules } from "@/features/tags/tag-rules-repository";
 
+export const dynamic = "force-dynamic";
+
 export default async function TagsPage() {
   const rules = await listTagRules();
 

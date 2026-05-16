@@ -2,6 +2,8 @@ import Link from "next/link";
 import { CustomerList } from "@/features/customers/CustomerList";
 import { listCustomers } from "@/features/customers/customer-repository";
 
+export const dynamic = "force-dynamic";
+
 export default async function CustomersPage({
   searchParams,
 }: {

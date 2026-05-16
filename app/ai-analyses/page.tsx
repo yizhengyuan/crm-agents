@@ -1,5 +1,7 @@
 import { prisma } from "@/server/db";
 
+export const dynamic = "force-dynamic";
+
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     pending: "bg-gray-100 text-gray-600",

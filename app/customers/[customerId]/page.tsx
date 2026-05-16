@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { CustomerDetail } from "@/features/customers/CustomerDetail";
 import { getCustomerDetail } from "@/features/customers/customer-repository";
 
+export const dynamic = "force-dynamic";
+
 export default async function CustomerDetailPage({
   params,
 }: {
