@@ -7,10 +7,10 @@ export default async function TagsPage() {
   const rules = await listTagRules();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-bold">标签体系设置</h1>
-        <p className="mt-1 text-crm-muted">
+        <h1 className="text-2xl font-bold tracking-tight">标签体系设置</h1>
+        <p className="mt-1 text-muted-foreground">
           结构固定，说明和判断标准可持续优化。
         </p>
       </div>
