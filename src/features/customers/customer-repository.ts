@@ -40,3 +40,32 @@ export async function listCustomers(params: {
     include: { aiAnalyses: { orderBy: { createdAt: "desc" }, take: 1 } },
   });
 }
+
+export async function getCustomerDetail(customerId: string) {
+  return prisma.customer.findUnique({
+    where: { id: customerId },
+    include: {
+      materials: { orderBy: { createdAt: "desc" } },
+      aiAnalyses: { orderBy: { createdAt: "desc" }, take: 5 },
+    },
+  });
+}
+
+export async function updateCustomerLabels(
+  customerId: string,
+  input: {
+    layer: string | null;
+    stage: string | null;
+    valueRiskNotes: string | null;
+  },
+) {
+  return prisma.customer.update({
+    where: { id: customerId },
+    data: {
+      currentLayer: input.layer as never,
+      currentStage: input.stage as never,
+      hasValueRisk: Boolean(input.valueRiskNotes),
+      valueRiskNotes: input.valueRiskNotes,
+    },
+  });
+}

@@ -36,3 +36,19 @@ export async function createCustomerAction(formData: FormData) {
   revalidatePath("/customers");
   redirect(`/customers/${customer.id}`);
 }
+
+export async function updateCustomerLabelsAction(
+  customerId: string,
+  formData: FormData,
+) {
+  const { updateCustomerLabels } = await import("./customer-repository");
+
+  await updateCustomerLabels(customerId, {
+    layer: String(formData.get("layer") || "") || null,
+    stage: String(formData.get("stage") || "") || null,
+    valueRiskNotes:
+      String(formData.get("valueRiskNotes") || "").trim() || null,
+  });
+
+  revalidatePath(`/customers/${customerId}`);
+}
