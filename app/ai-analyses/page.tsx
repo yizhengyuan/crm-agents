@@ -66,7 +66,7 @@ export default async function AiAnalysesPage() {
 
                 <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
                   <span>模型：{analysis.model}</span>
-                  <span>资料数：{analysis.materialIds.length}</span>
+                  <span>资料数：{Array.isArray(analysis.materialIds) ? analysis.materialIds.length : 0}</span>
                   {analysis.startedAt && (
                     <span>
                       开始：{analysis.startedAt.toLocaleString("zh-CN")}
