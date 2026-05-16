@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { appConfig } from "@/app-config";
 import { Geist } from "next/font/google";
+import { cookies } from "next/headers";
 import { cn } from "@/lib/utils";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { prisma } from "@/server/db";
+import { SESSION_COOKIE_NAME, verifySessionToken } from "@/server/auth";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -47,23 +49,35 @@ async function getSidebarStats() {
   ];
 }
 
+async function isAuthenticated(): Promise<boolean> {
+  const secret = process.env.APP_SESSION_SECRET;
+  if (!secret) return false;
+  const store = await cookies();
+  const token = store.get(SESSION_COOKIE_NAME)?.value;
+  return verifySessionToken(token, secret);
+}
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const stats = await getSidebarStats();
+  const authed = await isAuthenticated();
 
   return (
     <html lang="zh-CN" className={cn("font-sans", geist.variable)}>
       <body className="min-h-screen bg-muted/30">
-        <div className="flex min-h-screen">
-          <AppSidebar stats={stats} />
-          <div className="flex flex-1 flex-col min-w-0">
-            <AppHeader />
-            <main className="flex-1 px-6 py-6">{children}</main>
+        {authed ? (
+          <div className="flex min-h-screen">
+            <AppSidebar stats={await getSidebarStats()} />
+            <div className="flex flex-1 flex-col min-w-0">
+              <AppHeader />
+              <main className="flex-1 px-6 py-6">{children}</main>
+            </div>
           </div>
-        </div>
+        ) : (
+          children
+        )}
       </body>
     </html>
   );

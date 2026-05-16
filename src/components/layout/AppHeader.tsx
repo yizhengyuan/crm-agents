@@ -1,8 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bell, Search, PanelLeft } from "lucide-react";
+import { Bell, Search, PanelLeft, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { logoutAction } from "@/server/auth-actions";
 
 const titleMap: Record<string, string> = {
   "/": "客户工作台",
@@ -66,6 +67,17 @@ export function AppHeader() {
           </div>
           <span className="text-sm font-medium hidden sm:block">我的</span>
         </div>
+
+        <form action={logoutAction}>
+          <button
+            type="submit"
+            aria-label="退出登录"
+            title="退出登录"
+            className="rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+        </form>
       </div>
     </header>
   );

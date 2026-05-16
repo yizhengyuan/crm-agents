@@ -13,8 +13,10 @@ const envSchema = z.object({
   SUPABASE_STORAGE_BUCKET: z.string().default("crm-materials"),
   LOCAL_UPLOAD_DIR: z.string().default(".data/uploads"),
   ALLOW_LOCAL_UPLOADS: z.enum(["true", "false"]).default("false"),
-  APP_ACCESS_PASSWORD: z.string().optional(),
-  APP_SESSION_SECRET: z.string().optional(),
+  APP_ACCESS_PASSWORD: z.string().min(1, "APP_ACCESS_PASSWORD is required"),
+  APP_SESSION_SECRET: z
+    .string()
+    .min(32, "APP_SESSION_SECRET must be at least 32 characters"),
 });
 
 export const env = envSchema.parse(process.env);
