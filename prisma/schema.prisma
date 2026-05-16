@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CustomerLayer {
+  S
+  A
+  B
+  C
+  D
+}
+
+enum CustomerStage {
+  greeting_materials
+  discover_needs
+  build_trust
+  present_offer
+  offline_conversion
+  maintenance_referral
+}
+
+enum MaterialType {
+  manual_note
+  chat_text
+  screenshot
+  attachment
+}
+
+enum OcrStatus {
+  not_required
+  pending
+  running
+  succeeded
+  failed
+}
+
+enum AnalysisStatus {
+  pending
+  running
+  succeeded
+  failed
+}
+
+model Workspace {
+  id        String     @id @default(cuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  users     User[]
+  customers Customer[]
+  tagRules  TagRule[]
+}
+
+model User {
+  id          String     @id @default(cuid())
+  workspaceId String
+  email       String?
+  name        String
+  role        String     @default("owner")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  customers   Customer[] @relation("CustomerOwner")
+}
+
+model Customer {
+  id                String             @id @default(cuid())
+  workspaceId       String
+  ownerUserId       String?
+  displayName       String
+  wechatName        String?
+  wechatId          String?
+  phone             String?
+  company           String?
+  industry          String?
+  roleTitle         String?
+  sourceChannel     String?
+  notes             String?
+  currentLayer      CustomerLayer?
+  currentStage      CustomerStage?
+  hasValueRisk      Boolean            @default(false)
+  valueRiskNotes    String?
+  lastInteractionAt DateTime?
+  archivedAt        DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  workspace         Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  owner             User?              @relation("CustomerOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  materials         CustomerMaterial[]
+  aiAnalyses        AiAnalysis[]
+
+  @@index([workspaceId, currentLayer])
+  @@index([workspaceId, currentStage])
+  @@index([workspaceId, updatedAt])
+}
+
+model CustomerMaterial {
+  id             String       @id @default(cuid())
+  customerId     String
+  type           MaterialType
+
+  title          String
+  contentText    String?
+  extractedText  String?
+
+  fileUrl        String?
+  fileKey        String?
+  storageBucket  String?
+  mimeType       String?
+  fileName       String?
+  fileSize       Int?
+
+  ocrStatus      OcrStatus    @default(not_required)
+  ocrError       String?
+  ocrModel       String?
+  ocrCompletedAt DateTime?
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, createdAt])
+  @@index([customerId, type])
+  @@index([ocrStatus])
+}
+
+model AiAnalysis {
+  id                    String         @id @default(cuid())
+  customerId            String
+  status                AnalysisStatus @default(pending)
+
+  model                 String
+  promptVersion         String?
+  materialIds           String[]
+
+  summary               String?
+  profileSignals        Json?
+  needSignals           Json?
+  paymentSignals        Json?
+  valueRiskSignals      Json?
+
+  recommendedLayer      String?
+  layerConfidence       Int?
+  layerReason           String?
+
+  recommendedStage      String?
+  stageConfidence       Int?
+  stageReason           String?
+
+  evidenceQuotes        Json?
+  missingInformation    Json?
+
+  humanConfirmedLayer   String?
+  humanConfirmedStage   String?
+  humanFeedbackNote     String?
+
+  errorMessage          String?
+  startedAt             DateTime?
+  completedAt           DateTime?
+  createdAt             DateTime       @default(now())
+
+  customer              Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, createdAt])
+  @@index([status])
+}
+
+model TagRule {
+  id          String    @id @default(cuid())
+  workspaceId String
+  category    String
+  code        String
+  name        String
+  description String
+  criteria    String
+  updatedAt   DateTime  @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, category, code])
+}
